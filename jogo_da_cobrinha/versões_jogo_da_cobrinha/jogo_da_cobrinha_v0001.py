@@ -1,3 +1,5 @@
+# Aqui eu inseri a pontuação do jogo, a segunda versão
+
 import pygame
 import random
 
