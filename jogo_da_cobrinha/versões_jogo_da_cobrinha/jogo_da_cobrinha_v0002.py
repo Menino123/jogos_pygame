@@ -1,3 +1,6 @@
+# Aqui eu acrescentei o nível ao jogo
+# (fazendo com que quando a pontuação ficasse 5, o nível subiria 1 e a velocidade subisse x), a terceira versão
+
 import pygame
 import random
  
