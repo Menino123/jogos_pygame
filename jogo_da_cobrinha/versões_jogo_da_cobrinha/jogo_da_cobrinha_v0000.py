@@ -1,3 +1,5 @@
+# esta é a versão inicial do jogo, a primeira versão
+
 import pygame
 import random
  
