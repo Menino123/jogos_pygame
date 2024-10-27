@@ -17,10 +17,10 @@ RED = (255, 0, 0)
 ORANGE = (255, 255, 0)
 
 # Carregar imagens
-background_image = pygame.image.load(r"C:\Python_codes\Jogos\jogos_pygame\nave_espacial\imagens\background_space.png")
-player_image = pygame.image.load(r"C:\Python_codes\Jogos\jogos_pygame\nave_espacial\imagens\spaceship.png")
-meteor_image = pygame.image.load(r"C:\Python_codes\Jogos\jogos_pygame\nave_espacial\imagens\meteor.png")
-star_image = pygame.image.load(r"C:\Python_codes\Jogos\jogos_pygame\nave_espacial\imagens\star.png")
+background_image = pygame.image.load(r"C:\Python_codes\Jogos\jogos_pygame\nave_espacial\imagens\background_space.png")    # têm que pôr vocês o vosso nome da pasta pois varia de computador para computador
+player_image = pygame.image.load(r"C:\Python_codes\Jogos\jogos_pygame\nave_espacial\imagens\spaceship.png")               # têm que pôr vocês o vosso nome da pasta pois varia de computador para computador
+meteor_image = pygame.image.load(r"C:\Python_codes\Jogos\jogos_pygame\nave_espacial\imagens\meteor.png")                  # têm que pôr vocês o vosso nome da pasta pois varia de computador para computador
+star_image = pygame.image.load(r"C:\Python_codes\Jogos\jogos_pygame\nave_espacial\imagens\star.png")                      # têm que pôr vocês o vosso nome da pasta pois varia de computador para computador
 
 # Configurações do jogador
 player_size = 60
