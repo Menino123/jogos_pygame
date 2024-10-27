@@ -17,16 +17,16 @@ RED = (255, 0, 0)
 ORANGE = (255, 255, 0)
 
 # Carregar imagens
-background_image = pygame.image.load(r"D:\jogos pygame\nave espacial\imagens\background_space.png")
-player_image = pygame.image.load(r"D:\jogos pygame\nave espacial\imagens\spaceship.png")
-meteor_image = pygame.image.load(r"D:\jogos pygame\nave espacial\imagens\meteor.png")
-star_image = pygame.image.load(r"D:\jogos pygame\nave espacial\imagens\star.png")
+background_image = pygame.image.load(r"C:\Python_codes\Jogos\jogos_pygame\nave_espacial\imagens\background_space.png")
+player_image = pygame.image.load(r"C:\Python_codes\Jogos\jogos_pygame\nave_espacial\imagens\spaceship.png")
+meteor_image = pygame.image.load(r"C:\Python_codes\Jogos\jogos_pygame\nave_espacial\imagens\meteor.png")
+star_image = pygame.image.load(r"C:\Python_codes\Jogos\jogos_pygame\nave_espacial\imagens\star.png")
 
 # Configurações do jogador
-player_size = 50
+player_size = 60
 player_x = SCREEN_WIDTH // 2
 player_y = SCREEN_HEIGHT - 2 * player_size
-player_speed = 25
+player_speed = 15
 
 # Configurações dos meteoros e estrelas
 meteor_size = 25
@@ -37,8 +37,8 @@ meteor_list = []
 star_list = []
 
 # Configurações dos lasers
-laser_width = 4
-laser_height = 10
+laser_width = 10
+laser_height = 30
 laser_speed = 10
 laser_color = RED
 laser_list = []
