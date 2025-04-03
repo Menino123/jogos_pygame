@@ -2,7 +2,6 @@ import pygame
 import random
 import os
 
-# Inicializa o Pygame
 pygame.init()
 
 # Configurações da tela
@@ -17,83 +16,72 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 ORANGE = (255, 255, 0)
 
-# Carregar imagens com caminhos relativos
+# Carregar imagens
 base_path = os.path.dirname(__file__)
 background_image = pygame.image.load(os.path.join(base_path, "imagens/background_space.png"))
-player_image = pygame.image.load(os.path.join(base_path, "imagens/spaceship.png"))
-meteor_image = pygame.image.load(os.path.join(base_path, "imagens/meteor.png"))
-star_image = pygame.image.load(os.path.join(base_path, "imagens/star.png"))
 
-# Configurações do jogador
-player_size = 60
-player_x = SCREEN_WIDTH // 2
-player_y = SCREEN_HEIGHT - 2 * player_size
-player_speed = 15
+class Player:
+    def __init__(self):
+        self.image = pygame.image.load(os.path.join(base_path, "imagens/spaceship.png"))
+        self.size = 60
+        self.x = SCREEN_WIDTH // 2
+        self.y = SCREEN_HEIGHT - 2 * self.size
+        self.speed = 15
 
-# Configurações dos meteoros e estrelas
-meteor_size = 25
-star_size = 30
-meteor_speed = 5
-star_speed = 10
-meteor_list = []
-star_list = []
+    def draw(self, screen):
+        screen.blit(pygame.transform.scale(self.image, (self.size, self.size)), (self.x, self.y))
 
-# Configurações dos lasers
-laser_width = 10
-laser_height = 30
-laser_speed = 10
-laser_color = RED
-laser_list = []
+class Meteor:
+    def __init__(self):
+        self.image = pygame.image.load(os.path.join(base_path, "imagens/meteor.png"))
+        self.size = 25
+        self.speed = 5
+        self.x = random.randint(0, SCREEN_WIDTH - self.size)
+        self.y = -self.size
 
-# Relógio
-clock = pygame.time.Clock()
+    def draw(self, screen):
+        screen.blit(pygame.transform.scale(self.image, (self.size, self.size)), (self.x, self.y))
 
-# Pontuação
-score = 0
+class Star:
+    def __init__(self):
+        self.image = pygame.image.load(os.path.join(base_path, "imagens/star.png"))
+        self.size = 30
+        self.speed = 10
+        self.x = random.randint(0, SCREEN_WIDTH - self.size)
+        self.y = -self.size
 
-# Nível
-level = 1
+    def draw(self, screen):
+        screen.blit(pygame.transform.scale(self.image, (self.size, self.size)), (self.x, self.y))
 
-# Função para desenhar o jogador
-def draw_player(x, y):
-    screen.blit(pygame.transform.scale(player_image, (player_size, player_size)), (x, y))
+class Laser:
+    def __init__(self, x, y):
+        self.width = 10
+        self.height = 30
+        self.speed = 10
+        self.color = RED
+        self.x = x
+        self.y = y
 
-# Função para desenhar meteoros
-def draw_meteors(meteors):
-    for meteor in meteors:
-        screen.blit(pygame.transform.scale(meteor_image, (meteor_size, meteor_size)), (meteor[0], meteor[1]))
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, pygame.Rect(self.x, self.y, self.width, self.height))
 
-# Função para desenhar estrelas
-def draw_stars(stars):
-    for star in stars:
-        screen.blit(pygame.transform.scale(star_image, (star_size, star_size)), (star[0], star[1]))
-
-# Função para desenhar lasers
-def draw_lasers(lasers):
-    for laser in lasers:
-        pygame.draw.rect(screen, laser_color, pygame.Rect(laser[0], laser[1], laser_width, laser_height))
-
-# Função para verificar colisão
 def check_collision(obj1, obj2, size1, size2):
-    return (obj1[0] < obj2[0] + size2 and
-            obj1[0] + size1 > obj2[0] and
-            obj1[1] < obj2[1] + size2 and
-            obj1[1] + size1 > obj2[1])
+    return (obj1.x < obj2.x + size2 and
+            obj1.x + size1 > obj2.x and
+            obj1.y < obj2.y + size2 and
+            obj1.y + size1 > obj2.y)
 
-# Função para reiniciar o jogo
 def reset_game():
-    global player_x, player_y, meteor_list, star_list, laser_list, score, level
-    player_x = SCREEN_WIDTH // 2
-    player_y = SCREEN_HEIGHT - 2 * player_size
-    meteor_list = []
-    star_list = []
-    laser_list = []
+    global player, meteors, stars, lasers, score, level
+    player = Player()
+    meteors = []
+    stars = []
+    lasers = []
     score = 0
     level = 1
 
-# Função principal do jogo
 def game_loop():
-    global player_x, player_y, meteor_list, star_list, laser_list, score, level
+    global player, meteors, stars, lasers, score, level
     running = True
     game_over = False
 
@@ -123,50 +111,46 @@ def game_loop():
                     running = False
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        laser_list.append([player_x + player_size // 2 - laser_width // 2, player_y])
+                        lasers.append(Laser(player.x + player.size // 2 - Laser.width // 2, player.y))
 
             # Movimento do jogador
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT] and player_x > 0:
-                player_x -= player_speed
-            if keys[pygame.K_RIGHT] and player_x < SCREEN_WIDTH - player_size:
-                player_x += player_speed
+            if keys[pygame.K_LEFT] and player.x > 0:
+                player.x -= player.speed
+            if keys[pygame.K_RIGHT] and player.x < SCREEN_WIDTH - player.size:
+                player.x += player.speed
 
-            # Adicionar meteoros
+            # Adicionar meteoros e estrelas
             if random.randint(1, 20) == 1:
-                meteor_list.append([random.randint(0, SCREEN_WIDTH - meteor_size), -meteor_size])
-
-            # Adicionar estrelas
+                meteors.append(Meteor())
             if random.randint(1, 50) == 1:
-                star_list.append([random.randint(0, SCREEN_WIDTH - star_size), -star_size])
+                stars.append(Star())
 
-            # Mover meteoros
-            for meteor in meteor_list:
-                meteor[1] += meteor_speed * level
-            meteor_list = [meteor for meteor in meteor_list if meteor[1] < SCREEN_HEIGHT]
+            # Mover meteoros, estrelas e lasers
+            for meteor in meteors:
+                meteor.y += meteor.speed * level
+            meteors = [meteor for meteor in meteors if meteor.y < SCREEN_HEIGHT]
 
-            # Mover estrelas
-            for star in star_list:
-                star[1] += star_speed * level
-            star_list = [star for star in star_list if star[1] < SCREEN_HEIGHT]
+            for star in stars:
+                star.y += star.speed * level
+            stars = [star for star in stars if star.y < SCREEN_HEIGHT]
 
-            # Mover lasers
-            for laser in laser_list:
-                laser[1] -= laser_speed
-            laser_list = [laser for laser in laser_list if laser[1] > 0]
+            for laser in lasers:
+                laser.y -= laser.speed
+            lasers = [laser for laser in lasers if laser.y > 0]
 
             # Verificar colisões de lasers com meteoros e estrelas
-            for laser in laser_list:
-                for meteor in meteor_list:
-                    if check_collision(laser, meteor, laser_width, meteor_size):
-                        meteor_list.remove(meteor)
-                        laser_list.remove(laser)
+            for laser in lasers:
+                for meteor in meteors:
+                    if check_collision(laser, meteor, laser.width, meteor.size):
+                        meteors.remove(meteor)
+                        lasers.remove(laser)
                         score += 1
                         break
-                for star in star_list:
-                    if check_collision(laser, star, laser_width, star_size):
-                        star_list.remove(star)
-                        laser_list.remove(laser)
+                for star in stars:
+                    if check_collision(laser, star, laser.width, star.size):
+                        stars.remove(star)
+                        lasers.remove(laser)
                         score += 1
                         break
 
@@ -175,28 +159,29 @@ def game_loop():
                 level = score // 50 + 1
 
             # Verificar colisões da nave com meteoros e estrelas
-            for meteor in meteor_list:
-                if check_collision(meteor, [player_x, player_y], meteor_size, player_size):
+            for meteor in meteors:
+                if check_collision(meteor, player, meteor.size, player.size):
                     game_over = True
                     break
-            for star in star_list:
-                if check_collision(star, [player_x, player_y], star_size, player_size):
+            for star in stars:
+                if check_collision(star, player, star.size, player.size):
                     game_over = True
                     break
 
             # Desenhar tudo na tela
             screen.blit(pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT)), (0, 0))
-            draw_player(player_x, player_y)
-            draw_meteors(meteor_list)
-            draw_stars(star_list)
-            draw_lasers(laser_list)
+            player.draw(screen)
+            for meteor in meteors:
+                meteor.draw(screen)
+            for star in stars:
+                star.draw(screen)
+            for laser in lasers:
+                laser.draw(screen)
 
-            # Desenhar pontuação
+            # Desenhar pontuação e nível
             font = pygame.font.SysFont(None, 30)
             text = font.render(f"Score: {score}", True, RED)
             screen.blit(text, [10, 10])
-
-            # Desenhar nível
             text = font.render(f"Level: {level}", True, RED)
             screen.blit(text, [10, 40])
 
@@ -206,4 +191,5 @@ def game_loop():
     pygame.quit()
 
 # Iniciar o jogo
+reset_game()
 game_loop()
